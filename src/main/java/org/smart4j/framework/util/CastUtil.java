@@ -1,4 +1,4 @@
-package util;
+package org.smart4j.framework.util;
 
 /**
  * Created by lenovo on 2016-12-23.
