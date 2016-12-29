@@ -18,4 +18,8 @@ public final class StringUtil {
         }
         return StringUtils.isEmpty(strValue);
     }
+
+    public static String[] splitString(String body, String s) {
+        return body.split(s);
+    }
 }

@@ -8,7 +8,7 @@ import java.util.Properties;
 /**
  * Created by lenovo on 2016-12-28.
  */
-public class ConfigHelper {
+public final class ConfigHelper {
     private static final Properties CONFIG_PROPS= PropsUtil.loadProps(ConfigConstant.CONFIG_FILE);
     public static String getJdbcDriver(){
         return PropsUtil.getString(CONFIG_PROPS,ConfigConstant.JDBC_DRIVER);

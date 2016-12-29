@@ -1,5 +1,6 @@
 package org.smart4j.framework.helper;
 
+import org.smart4j.framework.annotation.Controller;
 import org.smart4j.framework.annotation.Service;
 import org.smart4j.framework.util.ClassUtil;
 
@@ -33,7 +34,7 @@ public final class ClassHelper {
     public static Set<Class<?>> getControllerClassSet() {
         Set<Class<?>> classSet=new HashSet<>();
         for (Class<?> cls:CLASS_SET) {
-            if(cls.isAnnotationPresent(Service.class)){
+            if(cls.isAnnotationPresent(Controller.class)){
                 classSet.add(cls);
             }
         }
