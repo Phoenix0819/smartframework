@@ -6,7 +6,13 @@
 
     <groupId>org.smart4j</groupId>
     <artifactId>smartframework</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
         <plugins>
