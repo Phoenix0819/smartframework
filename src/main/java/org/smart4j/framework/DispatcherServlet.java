@@ -33,12 +33,14 @@ import java.util.stream.Stream;
 public class DispatcherServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
+        System.out.println("begin  88888888888888DispatcherServlet extends HttpServlet init()");
         HelperLoader.init();
         ServletContext servletContext= getServletConfig().getServletContext();
         ServletRegistration jspServlet=servletContext.getServletRegistration("jsp");
         jspServlet.addMapping(ConfigHelper.getAppJspPath()+"*");
         ServletRegistration defaultServlet=servletContext.getServletRegistration("default");
         defaultServlet.addMapping(ConfigHelper.getAppJspPath()+"*");
+        System.out.println("end  88888888888888DispatcherServlet extends HttpServlet init()");
     }
 
     @Override

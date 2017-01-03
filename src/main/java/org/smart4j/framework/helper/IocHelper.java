@@ -26,11 +26,13 @@ public final class IocHelper {
                             Object beanFieldInstance=beanMap.get(beanFieldClass);
                             if (beanFieldInstance!=null){
                                 ReflectionUtil.setField(beanInstance,beanField,beanFieldInstance);
+                                System.out.println("888888888888888"+beanInstance+beanField+beanFieldInstance+"999999999");
                             }
                         }
                     }
                 }
             }
         }
+
     }
 }
