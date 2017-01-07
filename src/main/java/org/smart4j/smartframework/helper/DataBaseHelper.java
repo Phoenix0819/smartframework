@@ -30,14 +30,12 @@ public final class DataBaseHelper {
     private static final BasicDataSource DATA_SOURCE;
 
     static {
-        //Properties conf= PropsUtil.loadProps("smart.properties");
         CONNECTION_THREAD_LOCAL=new ThreadLocal<>();
         QUERY_RUNNER=new QueryRunner();
         String driver= ConfigHelper.getJdbcDriver();
         String url=ConfigHelper.getJdbcUrl();
         String username=ConfigHelper.getJdbcUsername();
         String password=ConfigHelper.getJdbcPassword();
-
         DATA_SOURCE=new BasicDataSource();
         DATA_SOURCE.setDriverClassName(driver);
         DATA_SOURCE.setUrl(url);
@@ -65,13 +63,12 @@ public final class DataBaseHelper {
         List<T> entityList;
         try {
             Connection connection=getConnection();
+            System.out.println(connection);
             entityList=QUERY_RUNNER.query(connection,sql,new BeanListHandler<T>(entityClass),params);
         } catch (SQLException e) {
             LOGGER.error("query entity list failure"+e);
             throw new RuntimeException(e);
-        }/*finally {
-            closeConnection();
-        }*/
+        }
         return entityList;
     }
 

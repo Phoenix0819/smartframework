@@ -13,11 +13,11 @@ public class View {
         return path;
     }
 
+    private Map<String,Object> model;
+
     public Map<String, Object> getModel() {
         return model;
     }
-
-    private Map<String,Object> model;
 
     public View(String path) {
         this.path = path;

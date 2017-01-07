@@ -18,14 +18,12 @@ import java.util.Map;
 @Controller
 public class CustomerController {
 
-   // @Inject
-    private CustomerService customerService=new CustomerService();
+    @Inject
+    private CustomerService customerService;
 
     @Action("get:/customer")
     public View index(Param param){
-        System.out.println("index 进来啦啦啦");
         List<Customer> customerList=customerService.getCustomerList();
-        System.out.println("getCustomerList 好啦啦啦");
         return new View("customer.jsp").addModel("customerList",customerList);
     }
 
