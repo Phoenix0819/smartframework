@@ -1,0 +1,31 @@
+1.{启动tomcat，初始化Servlet
+当应用程序启动后,事实上并没有创建所有的Servlet实例
+容器会在首次请求需要某个Servlet服务时,才将对应的Servlet类实例化,进行初始化操作,然后在处理请求
+这意味着第一次请求该Servle的客户端,必须等待Servlet类实例化、进行初始动作所必须花费时间,才真正得到请求的处理
+项目希望应用程序启动时,就把Servlet类载入,实例化并做好初始化动作
+DispatcherServlet类上面标记的@WebServlet(urlPatterns = "/*",loadOnStartup = 0)注解中
+使用loadOnStartup设置(默认值-1)大于等于0的值，表示按照数字大小优先初始化数字小的Servlet类
+}
+
+2.{初始化DispatcherServlet.java类，调用init()方法
+Servlet第一次加载到内存时，调用init()方法，向Servlet传递初始化参数
+调用HelperLoader.init();初始化Helper类，集中加载ClassHelper,BeanHelper,IocHelper,ControllerHelper的static块
+通过遍历类数组ClassHelper.class,BeanHelper.class,IocHelper.class,ControllerHelper.class
+调用ClassUtil.loadClass(cls.getName(),true);实例化Helper类（new了，加载静态代码块）
+    2.1 加载ClassHelper类静态代码块，获取应用包名下的所有类（CLASS_SET），包括service、controller、model
+    2.2 加载BeanHelper类静态代码块，将CLASS_SET中的controller和service类，实例化（new了）
+        得到已经实例化的类和实例对象Map（BEAN_MAP）
+    2.3 加载IocHelper类静态代码块，遍历BEAN_MAP，获得已经实例化的每个类中的成员变量，遍历得到带有Inject注解的变量集合
+        Class<?> beanFieldClass=beanField.getType();得到变量类型
+        Object beanFieldInstance=beanMap.get(beanFieldClass);在BEAN_MAP中得到成员变量对应类型对应的实例
+        ReflectionUtil.setField(beanInstance,beanField,beanFieldInstance);-->beanField.set(beanInstance,beanFieldInstance);
+        将变量实例赋给所在的已经实例化的controller对象的成员变量
+    2.4 加载ControllerHelper类静态代码块，获得CLASS_SET中的controller类集合，遍历
+        获得controller类中带Action注解的方法集合，获得方法上面的注解
+        将controller实例化对象controllerClass,其中一个方法method-->封装成Handler类
+        根据字符串规则，得到requestMethod和requestPath-->封装成Request类
+        得到ACTION_MAP<Request,Handler>
+}
+3.处理Http请求，服务器调用Servlet的service(),Servlet能够读取在Http请求中提供的数据，为客户端定制Http响应
+
+4.Servlet会保留在服务器的地址空间中，并可以用于处理从客户端接收到的其他Http请求，为每个Http请求调用service()方法
