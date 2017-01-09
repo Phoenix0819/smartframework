@@ -42,21 +42,10 @@ public final class ClassHelper {
         return classSet;
     }
 
-    public static Set<Class<?>> getInjectClassSet() {
-        Set<Class<?>> classSet=new HashSet<>();
-        for (Class<?> cls:CLASS_SET) {
-            if(cls.isAnnotationPresent(Inject.class)){
-                classSet.add(cls);
-            }
-        }
-        return classSet;
-    }
-
     public static Set<Class<?>> getBeanClassSet() {
         Set<Class<?>> beanClassSet=new HashSet<>();
         beanClassSet.addAll(getServiceClassSet());
         beanClassSet.addAll(getControllerClassSet());
-        beanClassSet.addAll(getInjectClassSet());
         return beanClassSet;
     }
 
