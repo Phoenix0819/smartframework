@@ -4,11 +4,14 @@
 这意味着第一次请求该Servle的客户端,必须等待Servlet类实例化、进行初始动作所必须花费时间,才真正得到请求的处理
 项目希望应用程序启动时,就把Servlet类载入,实例化并做好初始化动作
 DispatcherServlet类上面标记的@WebServlet(urlPatterns = "/*",loadOnStartup = 0)注解中
+@WebServlet 注解用于声明一个HttpServlet的配置。
+urlPatterns说明匹配一个或多个URL路径，urlPatterns = "/*"表示拦截所有URL
 使用loadOnStartup设置(默认值-1)大于等于0的值，表示按照数字大小优先初始化数字小的Servlet类
 }
 
-2.{初始化DispatcherServlet.java类，调用init()方法
+2.{初始化DispatcherServlet.java类，调用init()方法。获得类的初始化和实例，初始化的servlet对象
 Servlet第一次加载到内存时，调用init()方法，向Servlet传递初始化参数
+
 调用HelperLoader.init();初始化Helper类，集中加载ClassHelper,BeanHelper,IocHelper,ControllerHelper的static块
 通过遍历类数组ClassHelper.class,BeanHelper.class,IocHelper.class,ControllerHelper.class
 调用ClassUtil.loadClass(cls.getName(),true);实例化Helper类（new了，加载静态代码块）
@@ -22,10 +25,48 @@ Servlet第一次加载到内存时，调用init()方法，向Servlet传递初始
         将变量实例赋给所在的已经实例化的controller对象的成员变量
     2.4 加载ControllerHelper类静态代码块，获得CLASS_SET中的controller类集合，遍历
         获得controller类中带Action注解的方法集合，获得方法上面的注解
-        将controller实例化对象controllerClass,其中一个方法method-->封装成Handler类
+        将controller类类型controllerClass,其中一个方法method-->封装成Handler类
         根据字符串规则，得到requestMethod和requestPath-->封装成Request类
         得到ACTION_MAP<Request,Handler>
-}
-3.处理Http请求，服务器调用Servlet的service(),Servlet能够读取在Http请求中提供的数据，为客户端定制Http响应
 
+ServletContext servletContext= getServletConfig().getServletContext();获得servlet上下文
+    在servlet初始化时，容器传递进来一个ServletConfig对象并保存在servlet实例中
+    该对象允许访问两项内容：初始化参数和ServletContext对象
+    一个servlet上下文是servlet引擎提供用来服务于Web应用的接口。
+    一个servlet可以通过ServletConfig对象的getServletContext()方法得到servlet上下文的引用，如果servlet直接或间接调用子类GenericServlet，则可以使用getServletContext()方法。
+        Web应用中servlet可以使用servlet上下文得到：
+        1.在调用期间保存和检索属性的功能，并与其他servlet共享这些属性。
+        2.读取Web应用中文件内容和其他静态资源的功能。
+        3.互相发送请求的方式。
+        4.记录错误和信息化消息的功能。
+
+ServletRegistration jspServlet=servletContext.getServletRegistration("jsp");//注册处理jsp的servlet
+jspServlet.addMapping(ConfigHelper.getAppJspPath()+"*");
+ServletRegistration defaultServlet=servletContext.getServletRegistration("default");//注册处理静态资源的servlet
+defaultServlet.addMapping(ConfigHelper.getAppAssetPath()+"*");
+两个getServletRegistration()方法主要用于动态为Servlet增加映射信息，
+这等价于在web.xml中使用<servlet-mapping>标签为存在的Servlet增加映射信息。
+}
+
+3.{处理Http请求，服务器调用Servlet的service(),Servlet能够读取在Http请求中提供的数据，为客户端定制Http响应
+当用户从浏览器向服务器发起一个请求，根据路径匹配，找到匹配的servlet
+Web服务器首先检查是否已经装载并创建了该Servlet的实例对象
+在启动时就已经创建了该Servlet的实例对象
+因此，创建一个用于封装HTTP请求消息的HttpServletRequest对象和一个代表HTTP响应消息的HttpServletResponse对象
+然后调用Servlet的service()方法并将请求和响应对象作为参数传递进去。
+
+由HttpServletRequest对象中获得访问方法requestMethod、访问路径requestPath、请求参数对象paramNames
+根据访问方法和路径，在ACTION_MAP中得到对应的Handler(controller类类型,和对应处理方法method)-->ACTION处理方法
+获得BEAN_MAP中该controller类类型的实例
+
+Object result= ReflectionUtil.invokeMethod(controllerBean,actionMethod,param);
+用反射机制执行实例化类中的处理方法
+
+判断执行结果是View或者Data
+
+当执行结果为View
+获得jsp路径
+request.getRequestDispatcher().forward(request.response)将客户端的请求转向（forward）到getRequestDispatcher（）方法中参数定义的页面或者链接。
+当一个客户端的请求到这个页面后，不做处理或者不处理完，将请求转给另一个页面处理，然后再响应给客户端。
+}
 4.Servlet会保留在服务器的地址空间中，并可以用于处理从客户端接收到的其他Http请求，为每个Http请求调用service()方法

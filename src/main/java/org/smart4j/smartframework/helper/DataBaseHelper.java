@@ -63,7 +63,6 @@ public final class DataBaseHelper {
         List<T> entityList;
         try {
             Connection connection=getConnection();
-            System.out.println(connection);
             entityList=QUERY_RUNNER.query(connection,sql,new BeanListHandler<T>(entityClass),params);
         } catch (SQLException e) {
             LOGGER.error("query entity list failure"+e);
@@ -80,9 +79,7 @@ public final class DataBaseHelper {
         } catch (SQLException e) {
             LOGGER.error("query entity failure"+e);
             throw new RuntimeException(e);
-        }/*finally {
-            closeConnection();
-        }*/
+        }
         return entity;
     }
 
@@ -94,9 +91,7 @@ public final class DataBaseHelper {
         } catch (SQLException e) {
             LOGGER.error("execute query failure"+e);
             throw new RuntimeException(e);
-        }/*finally {
-            closeConnection();
-        }*/
+        }
         return result;
     }
 
@@ -108,9 +103,7 @@ public final class DataBaseHelper {
         } catch (SQLException e) {
             LOGGER.error("execute update failure"+e);
             throw new RuntimeException(e);
-        }/*finally {
-            closeConnection();
-        }*/
+        }
         return rows;
     }
 
