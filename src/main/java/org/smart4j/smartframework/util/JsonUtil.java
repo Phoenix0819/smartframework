@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by lenovo on 2016-12-29.
  */
 public class JsonUtil {
-    private static final Logger LOGGER= LoggerFactory.getLogger(PropsUtil.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(JsonUtil.class);
     private static final ObjectMapper OBJECT_MAPPER=new ObjectMapper();
     public static<T> String toJson(T obj) {
         String json;

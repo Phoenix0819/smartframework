@@ -11,7 +11,7 @@ import java.net.URLEncoder;
  * Created by lenovo on 2016-12-29.
  */
 public class CodecUtil {
-    private static final Logger LOGGER= LoggerFactory.getLogger(PropsUtil.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(CodecUtil.class);
     public static String encodeURL(String source) {
         String target;
         try {

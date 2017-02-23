@@ -2,6 +2,7 @@ package org.smart4j.smartframework.pro.service;
 
 import org.smart4j.smartframework.annotation.Action;
 import org.smart4j.smartframework.annotation.Service;
+import org.smart4j.smartframework.annotation.Transaction;
 import org.smart4j.smartframework.helper.DataBaseHelper;
 import org.smart4j.smartframework.pro.model.Customer;
 
@@ -26,14 +27,17 @@ public class CustomerService {
         return DataBaseHelper.queryEntity(Customer.class,sql);
     }
 
+    @Transaction
     public boolean createCustomer(Map<String,Object> fieldMap){
         return DataBaseHelper.insertEntity(Customer.class,fieldMap);
     }
 
+    @Transaction
     public boolean updateCustomer(long id,Map<String,Object> fieldMap){
         return DataBaseHelper.updateEntity(Customer.class,id,fieldMap);
     }
 
+    @Transaction
     public boolean deleteCustomer(long id){
         return DataBaseHelper.deleteEntity(Customer.class,id);
     }

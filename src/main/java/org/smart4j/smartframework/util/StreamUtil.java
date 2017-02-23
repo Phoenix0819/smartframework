@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
  * Created by lenovo on 2016-12-29.
  */
 public final class StreamUtil {
-    private static final Logger LOGGER= LoggerFactory.getLogger(PropsUtil.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(StreamUtil.class);
     public static String getString(InputStream inputStream) {
         StringBuilder sb=new StringBuilder();
         BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));

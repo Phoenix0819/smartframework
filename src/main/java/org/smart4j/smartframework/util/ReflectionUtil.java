@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * Created by lenovo on 2016-12-28.
  */
 public final class ReflectionUtil {
-    private static final Logger LOGGER= LoggerFactory.getLogger(PropsUtil.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(ReflectionUtil.class);
 
     public static Object newInstance(Class<?> cls){
         Object instance=null;

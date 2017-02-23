@@ -1,5 +1,6 @@
 package org.smart4j.smartframework.helper;
 
+import com.sun.media.jfxmedia.locator.ConnectionHolder;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -24,13 +25,14 @@ import java.util.Map;
  * Created by lenovo on 2016-12-26.
  */
 public final class DataBaseHelper {
-    private static final Logger LOGGER= LoggerFactory.getLogger(PropsUtil.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(DataBaseHelper.class);
     private static final QueryRunner QUERY_RUNNER;
-    private static final ThreadLocal<Connection> CONNECTION_THREAD_LOCAL;
+    private static final ThreadLocal<Connection> CONNECTION_THREAD_LOCAL;//用于存放数据库连接的局部连接线程变量，使每个线程都有自己的连接
     private static final BasicDataSource DATA_SOURCE;
 
     static {
         CONNECTION_THREAD_LOCAL=new ThreadLocal<>();
+
         QUERY_RUNNER=new QueryRunner();
         String driver= ConfigHelper.getJdbcDriver();
         String url=ConfigHelper.getJdbcUrl();
@@ -41,6 +43,7 @@ public final class DataBaseHelper {
         DATA_SOURCE.setUrl(url);
         DATA_SOURCE.setUsername(username);
         DATA_SOURCE.setPassword(password);
+
 
     }
 
@@ -171,5 +174,48 @@ public final class DataBaseHelper {
         }
     }
 
+    public static void beginTransaction(){
+        Connection connection=getConnection();
+        if (connection!=null){
+            try {
+                connection.setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.error("begin transaction failure",e);
+                throw new RuntimeException(e);
+            }finally {
+                CONNECTION_THREAD_LOCAL.set(connection);
+            }
+        }
+    }
+
+    public static void commitTransaction(){
+        Connection connection=getConnection();
+        if (connection!=null){
+            try {
+                connection.commit();
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.error("commit transaction failure",e);
+                throw new RuntimeException(e);
+            }finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
+
+    public static void rollbackTransaction(){
+        Connection connection=getConnection();
+        if (connection!=null){
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.error("rollback transaction failure",e);
+                throw new RuntimeException(e);
+            }finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
 
 }
